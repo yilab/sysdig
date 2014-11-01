@@ -36,6 +36,8 @@ along with sysdig.  If not, see <http://www.gnu.org/licenses/>.
 //#define NDEBUG
 #include <assert.h>
 
+FILE* g_logfile = NULL;
+
 char* scap_getlasterr(scap_t* handle)
 {
 	return handle->m_lasterr;

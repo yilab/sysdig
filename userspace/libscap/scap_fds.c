@@ -682,14 +682,22 @@ int32_t scap_fd_read_unix_sockets_from_proc_fs(scap_t *handle, scap_fdinfo **soc
 	char *delimiters = " \t";
 	char *token;
 	int32_t uth_status = SCAP_SUCCESS;
+	TRACE("")
 	f = fopen("/proc/net/unix", "r");
 	if(NULL == f)
 	{
 		ASSERT(false);
 		return SCAP_FAILURE;
 	}
+
+	uint64_t cnt = 0;
 	while(NULL != fgets(line, sizeof(line), f))
 	{
+		++cnt;
+		char buf[1024];
+		snprintf(buf, sizeof(buf), "cnt=%"PRIu64, cnt);
+		TRACE(buf)
+		TRACE(line);
 		// skip the first line ... contains field names
 		if(!first_line)
 		{
@@ -805,6 +813,10 @@ int32_t scap_fd_read_ipv4_sockets_from_proc_fs(scap_t *handle, char *dir, int l4
 	char tc;
 	uint32_t j;
 
+	char buf[1024];
+	snprintf(buf, sizeof(buf), "dir=%s", dir);
+	TRACE(buf)
+
 	scan_buf = (char*)malloc(SOCKET_SCAN_BUFFER_SIZE);
 	if(scan_buf == NULL)
 	{
@@ -820,13 +832,24 @@ int32_t scap_fd_read_ipv4_sockets_from_proc_fs(scap_t *handle, char *dir, int l4
 		return SCAP_FAILURE;
 	}
 	
+	uint64_t cnt = 0;
 	while((rsize = fread(scan_buf, 1, SOCKET_SCAN_BUFFER_SIZE, f))  != 0)
 	{
+		++cnt;
+		char buf[1024];
+		snprintf(buf, sizeof(buf), "cnt=%"PRIu64 " rsize=%d", cnt, rsize);
+		TRACE(buf)
+		TRACE(scan_buf);
+
 		char* scan_end = scan_buf + rsize;
 		scan_pos = scan_buf;
 
 		while(scan_pos <= scan_end)
 		{
+			char buf[1024];
+			snprintf(buf, sizeof(buf), "scan_pos=%p scan_end=%p", scan_pos, scan_end);
+			TRACE(buf)
+
 			scan_pos = memchr(scan_pos, '\n', scan_end - scan_pos);
 
 			if(scan_pos == NULL)
@@ -982,6 +1005,10 @@ int32_t scap_fd_read_ipv6_sockets_from_proc_fs(scap_t *handle, char *dir, int l4
 	char tc;
 	uint32_t j;
 
+	char buf[1024];
+	snprintf(buf, sizeof(buf), "dir=%s", dir);
+	TRACE(buf)
+
 	scan_buf = (char*)malloc(SOCKET_SCAN_BUFFER_SIZE);
 	if(scan_buf == NULL)
 	{
@@ -998,13 +1025,24 @@ int32_t scap_fd_read_ipv6_sockets_from_proc_fs(scap_t *handle, char *dir, int l4
 		return SCAP_FAILURE;
 	}
 
+	uint64_t cnt = 0;
 	while((rsize = fread(scan_buf, 1, SOCKET_SCAN_BUFFER_SIZE, f))  != 0)
 	{
+		++cnt;
+		char buf[1024];
+		snprintf(buf, sizeof(buf), "cnt=%" PRIu64 " rsize=%d", cnt, rsize);
+		TRACE(buf)
+		TRACE(scan_buf);
+
 		char* scan_end = scan_buf + rsize;
 		scan_pos = scan_buf;
 
 		while(scan_pos <= scan_end)
 		{
+			char buf[1024];
+			snprintf(buf, sizeof(buf), "scan_pos=%p scan_end=%p", scan_pos, scan_end);
+			TRACE(buf)
+
 			scan_pos = memchr(scan_pos, '\n', scan_end - scan_pos);
 
 			if(scan_pos == NULL)
@@ -1187,6 +1225,7 @@ int32_t scap_fd_read_ipv6_sockets_from_proc_fs(scap_t *handle, char *dir, int l4
 
 int32_t scap_fd_read_sockets(scap_t *handle, scap_fdinfo **sockets)
 {
+	TRACE("")
 	if(SCAP_FAILURE == scap_fd_read_ipv4_sockets_from_proc_fs(handle, "/proc/net/tcp", SCAP_L4_TCP, sockets) ||
 	        SCAP_FAILURE == scap_fd_read_ipv4_sockets_from_proc_fs(handle, "/proc/net/udp", SCAP_L4_UDP, sockets) ||
 	        SCAP_FAILURE == scap_fd_read_ipv4_sockets_from_proc_fs(handle, "/proc/net/raw", SCAP_L4_RAW, sockets) ||

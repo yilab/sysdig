@@ -514,6 +514,10 @@ int32_t scap_proc_scan_proc_dir(scap_t* handle, char* procdirname, int parenttid
 	int32_t res = SCAP_SUCCESS;
 	char childdir[SCAP_MAX_PATH_SIZE];
 
+	char buf[1024];
+	snprintf(buf, sizeof(buf), "procdirname=%s parenttid=%d tid_to_scan=%d", procdirname, parenttid, tid_to_scan);
+	TRACE(buf)
+
 	scap_fdinfo* sockets = NULL;
 
 	tid = 0;

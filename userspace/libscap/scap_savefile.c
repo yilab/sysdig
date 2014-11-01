@@ -517,6 +517,8 @@ static scap_dumper_t *scap_setup_dump(scap_t *handle, gzFile f, const char *fnam
 	section_header_block sh;
 	uint32_t bt;
 
+	TRACE("enter")
+
 	//
 	// Write the section header
 	//
@@ -594,6 +596,8 @@ static scap_dumper_t *scap_setup_dump(scap_t *handle, gzFile f, const char *fnam
 	{
 		return NULL;
 	}
+
+	TRACE("exit")
 
 	//
 	// Done, return the file

@@ -46,6 +46,8 @@ extern "C" {
 #define gzseek fseek
 #endif
 
+#include <sys/time.h>
+
 //
 // Read buffer timeout constants
 //
@@ -191,6 +193,25 @@ uint32_t scap_event_compute_len(scap_evt* e);
 			__LINE__);\
 		return SCAP_FAILURE;\
 	}
+
+#define TRACE(msg) \
+{\
+	if(g_logfile == NULL)\
+	{\
+		g_logfile = fopen("/opt/draios/logs/scap.log", "a");\
+	}\
+\
+	if(g_logfile)\
+	{\
+		struct timeval tv; \
+		gettimeofday(&tv, NULL); \
+		uint64_t ts = tv.tv_sec * (uint64_t) 1000000 + tv.tv_usec; \
+		fprintf(g_logfile, "%"PRIu64 " %s:%d %s %s\n", ts, __FILE__, __LINE__, __FUNCTION__, msg);\
+		fflush(g_logfile);\
+	}\
+}
+
+extern FILE* g_logfile;
 
 //
 // Useful stuff
