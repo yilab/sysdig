@@ -301,6 +301,18 @@ static void add_chisel_dirs(sinsp* inspector)
 			inspector->add_chisel_dir(user_cdirs[j], true);
 		}
 	}
+
+	char* chiselpath = getenv("CHISELPATH");
+
+	if(chiselpath != NULL)
+	{
+		vector<string> user_cdirs = sinsp_split(chiselpath, ':');
+
+		for(uint32_t j = 0; j < user_cdirs.size(); j++)
+		{
+			inspector->add_chisel_dir(user_cdirs[j], true);
+		}
+	}
 }
 #endif
 
